@@ -11,14 +11,14 @@ export class DataLayerS3 {
 
     constructor(
         private readonly s3: S3 = new XAWS.S3(),
-        private readonly imagesBucketName  = process.env.TODOS_S3_BUCKET) {
+        private readonly imagesBucketName  = process.env.VIDEO_S3_BUCKET) {
     }
 
-    getUploadUrl(todoId: string){
-        logger.info('Generating new signed URL',{ additional: todoId});
+    getUploadUrl(videoId: string){
+        logger.info('Generating new signed URL',{ additional: videoId});
         return this.s3.getSignedUrl('putObject', {
             Bucket: this.imagesBucketName,
-            Key: todoId+'.png',
+            Key: videoId,
             Expires: 300
         })
     }

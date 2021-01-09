@@ -1,9 +1,11 @@
 import 'source-map-support/register'
 
-import { APIGatewayProxyEvent, APIGatewayProxyResult, APIGatewayProxyHandler } from 'aws-lambda'
+import { APIGatewayProxyEvent, APIGatewayProxyHandler, APIGatewayProxyResult } from 'aws-lambda'
+
+import { CreateVideoCommentRequest } from '../../requests/CreateVideoCommentRequest'
+import {createVideoCommentItem} from '../../buisnessLogic/TodoLogic'
 import { createLogger } from '../../utils/logger'
-import {getSignedUrl} from "../../buisnessLogic/TodoLogic";
-const logger = createLogger('generateUploadUrlHttp')
+const logger = createLogger('createVideoCommentHttp')
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   logger.info('Processing event',{ additional: event});
@@ -18,15 +20,20 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
       body: ""
     }
   }
-  const s3BucketUrl= getSignedUrl(videoId)
+  const newVideo: CreateVideoCommentRequest = JSON.parse(event.body)
+  const authorization = event.headers.Authorization
+  const split = authorization.split(' ')
+  const jwtToken = split[1]
+  const item = await createVideoCommentItem(newVideo,videoId, jwtToken)
+
   return {
-    statusCode: 200,
+    statusCode: 201,
     headers: {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Credentials': true
     },
     body: JSON.stringify({
-      "uploadUrl": s3BucketUrl
+      item
     })
   }
 }
