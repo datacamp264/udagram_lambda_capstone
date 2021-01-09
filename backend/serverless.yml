@@ -243,7 +243,7 @@ resources:
     AttachmentsBucket:
       Type: AWS::S3::Bucket
       Properties:
-        BucketName: ${self:provider.environment.TODOS_S3_BUCKET}
+        BucketName: ${self:provider.environment.VIDEO_S3_BUCKET}
         Tags:
           - Key: 'Allowed_Public_Access'
             Value: 'True'
@@ -261,16 +261,16 @@ resources:
                 - DELETE
                 - HEAD
               MaxAge: 3000
-#    BucketPolicy:
-#      Type: AWS::S3::BucketPolicy
-#      Properties:
-#        PolicyDocument:
-#          Id: udagramdatadev264Policy
-#          Version: '2012-10-17'
-#          Statement:
-#            - Sid: PublicReadForGetBucketObjects
-#              Effect: Allow
-#              Principal: '*'
-#              Action: 's3:GetObject'
-#              Resource: 'arn:aws:s3:::${self:provider.environment.TODOS_S3_BUCKET}/*'
-#        Bucket: !Ref AttachmentsBucket
+    BucketPolicy:
+      Type: AWS::S3::BucketPolicy
+      Properties:
+        PolicyDocument:
+          Id: udagramdatadev264Policy
+          Version: '2012-10-17'
+          Statement:
+            - Sid: PublicReadForGetBucketObjects
+              Effect: Allow
+              Principal: '*'
+              Action: 's3:GetObject'
+              Resource: 'arn:aws:s3:::${self:provider.environment.VIDEO_S3_BUCKET}/*'
+        Bucket: !Ref AttachmentsBucket

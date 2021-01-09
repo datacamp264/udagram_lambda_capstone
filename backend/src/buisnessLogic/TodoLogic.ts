@@ -68,7 +68,7 @@ export async function createVideo(
     description: createVideoRequest.description,
     watchCounter: 0,
     commentCounter:0,
-    attachmentUrl: `https://${process.env.TODOS_S3_BUCKET}.s3.amazonaws.com/${videoId}`,
+    attachmentUrl: `https://${process.env.VIDEO_S3_BUCKET}.s3.amazonaws.com/${videoId}`,
   })
 }
 

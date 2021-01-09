@@ -5,6 +5,7 @@ export default class Auth {
   accessToken;
   idToken;
   expiresAt;
+  sub;
 
   auth0 = new auth0.WebAuth({
     domain: authConfig.domain,
@@ -35,6 +36,9 @@ export default class Auth {
       if (authResult && authResult.accessToken && authResult.idToken) {
         console.log('Access token: ', authResult.accessToken)
         console.log('id token: ', authResult.idToken)
+        console.log('all',authResult)
+        this.sub = authResult.idTokenPayload.sub.toString()
+        console.log('sub',this.sub)
         this.setSession(authResult);
       } else if (err) {
         this.history.replace('/');
