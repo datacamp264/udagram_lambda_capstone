@@ -130,7 +130,7 @@
 							}
 						],
 						"url": {
-							"raw": "https://{{apiId}}.execute-api.eu-central-1.amazonaws.com/dev/video/256776f7-5310-4408-a8bf-b930e0e699e4",
+							"raw": "https://{{apiId}}.execute-api.eu-central-1.amazonaws.com/dev/video/02c744b3-63cd-41a6-9b66-fd282e47bfef",
 							"protocol": "https",
 							"host": [
 								"{{apiId}}",
@@ -142,7 +142,7 @@
 							"path": [
 								"dev",
 								"video",
-								"256776f7-5310-4408-a8bf-b930e0e699e4"
+								"02c744b3-63cd-41a6-9b66-fd282e47bfef"
 							]
 						}
 					},
@@ -170,7 +170,7 @@
 							"raw": "{\n\t\"incrementVideoCount\": true,\n\t\"incrementCommentCount\": false\n}"
 						},
 						"url": {
-							"raw": "https://{{apiId}}.execute-api.eu-central-1.amazonaws.com/dev/video/256776f7-5310-4408-a8bf-b930e0e699e4",
+							"raw": "https://{{apiId}}.execute-api.eu-central-1.amazonaws.com/dev/video/02c744b3-63cd-41a6-9b66-fd282e47bfef",
 							"protocol": "https",
 							"host": [
 								"{{apiId}}",
@@ -182,7 +182,7 @@
 							"path": [
 								"dev",
 								"video",
-								"256776f7-5310-4408-a8bf-b930e0e699e4"
+								"02c744b3-63cd-41a6-9b66-fd282e47bfef"
 							]
 						}
 					},
@@ -244,7 +244,7 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "https://{{apiId}}.execute-api.eu-central-1.amazonaws.com/dev/video/9fd9a8ee-3da5-47e3-b191-5908e7a2a279/attachment",
+							"raw": "https://{{apiId}}.execute-api.eu-central-1.amazonaws.com/dev/video/02c744b3-63cd-41a6-9b66-fd282e47bfef/attachment",
 							"protocol": "https",
 							"host": [
 								"{{apiId}}",
@@ -256,7 +256,7 @@
 							"path": [
 								"dev",
 								"video",
-								"9fd9a8ee-3da5-47e3-b191-5908e7a2a279",
+								"02c744b3-63cd-41a6-9b66-fd282e47bfef",
 								"attachment"
 							]
 						}
