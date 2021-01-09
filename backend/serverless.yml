@@ -1,5 +1,5 @@
 service:
-  name: serverless-todo-app
+  name: serverless-video-app
 
 plugins:
   - serverless-webpack
@@ -22,113 +22,166 @@ provider:
     lambda: true
     apiGateway: true
   environment:
-    TODOS_TABLE: Datagram264TodosTable-${self:provider.stage}
-    INDEX_NAME: I_DueDate
-    TODOS_S3_BUCKET: datagram264todosbucket-${self:provider.stage}
+    VIDEO_TABLE: Datagram264VideoItemTable-${self:provider.stage}
+    VIDEO_COMMENT_TABLE: Datagram264VideoCommentItemTable-${self:provider.stage}
+    VIDEO_INDEX_NAME: I_VIDEO_TABLE_CreationDate_GlobalIndex
+    VIDEO_COMMENT_INDEX_NAME: I_VIDEO_COMMENT_TABLE_LocalIndex
+    VIDEO_S3_BUCKET: datagram264videoitembucket-${self:provider.stage}
 custom:
   documentation:
     api:
       info:
         version: "1"
-        title: "serverless-todo-app"
-        description: "Api for udacity lesson 4"
+        title: "serverless-video-app"
+        description: "Api for udacity capstone project from datacamp264 with Video App functionality"
     models:
-      - name: CreateRequestVal
+      - name: CreateVideoRequestVal
         contentType: application/json
-        schema: ${file(models/createRequestVal.json)}
-      - name: UpdateRequestVal
+        schema: ${file(models/createVideoRequestVal.json)}
+      - name: CreateVideoCommentRequestVal
         contentType: application/json
-        schema: ${file(models/updateRequestVal.json)}
+        schema: ${file(models/createVideoCommentRequestVal.json)}
+      - name: UpdateVideoRequestVal
+        contentType: application/json
+        schema: ${file(models/UpdateVideoRequestVal.json)}
 functions:
 
   HS256Auth:
     handler: src/lambda/auth/auth0Authorizer.handler
 
-  # TODO: Configure this function
-  GetTodos:
-    handler: src/lambda/http/getTodos.handler
+  GetVideos:
+    handler: src/lambda/http/getVideos.handler
     events:
       - http:
           method: get
-          path: todos
+          path: videos/{yearCalenderWeek}
           authorizer: HS256Auth
           cors: true
     iamRoleStatements:
       - Effect: Allow
         Action:
           - dynamodb:Query
-        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}/index/${self:provider.environment.INDEX_NAME}
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.VIDEO_TABLE}/index/${self:provider.environment.VIDEO_INDEX_NAME}
+
+  GetVideoWithComments:
+    handler: src/lambda/http/getVideoWithComments.handler
+    events:
+      - http:
+          method: get
+          path: video/{videoId}
+          authorizer: HS256Auth
+          cors: true
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:Query
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.VIDEO_TABLE}
+      - Effect: Allow
+        Action:
+          - dynamodb:Query
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.VIDEO_COMMENT_TABLE}/index/${self:provider.environment.VIDEO_COMMENT_INDEX_NAME}
+
+
 
   # TODO: Configure this function
-  CreateTodo:
-    handler: src/lambda/http/createTodo.handler
+  CreateVideo:
+    handler: src/lambda/http/createVideo.handler
     events:
       - http:
           method: post
-          path: todos
+          path: video
           authorizer: HS256Auth
           cors: true
           reqValidatorName: RequestBodyValidator
           documentation:
-            summary: Create a Todo Item
-            description: Create a Todo Item
+            summary: Create a Video Item
+            description: Create a Video Item
             requestModels:
-              'application/json': CreateRequestVal
+              'application/json': CreateVideoRequestVal
     iamRoleStatements:
       - Effect: Allow
         Action:
           - dynamodb:PutItem
-        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.VIDEO_TABLE}
 
-  # TODO: Configure this function
-  UpdateTodo:
-    handler: src/lambda/http/updateTodo.handler
+  CreateVideoComment:
+    handler: src/lambda/http/createVideoComment.handler
     events:
       - http:
-          method: patch
-          path: todos/{todoId}
+          method: post
+          path: video/{videoId}/comment
           authorizer: HS256Auth
           cors: true
           reqValidatorName: RequestBodyValidator
           documentation:
-            summary: Update a Todo Item
-            description: Update a Todo Item
+            summary: Create a Video Comment Item
+            description: Create a Video Comment Item
             requestModels:
-              'application/json': UpdateRequestVal
+              'application/json': CreateVideoCommentRequestVal
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:PutItem
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.VIDEO_COMMENT_TABLE}
+
+  # TODO: Configure this function
+  UpdateVideo:
+    handler: src/lambda/http/updateVideo.handler
+    events:
+      - http:
+          method: patch
+          path: video/{videoId}
+          authorizer: HS256Auth
+          cors: true
+          reqValidatorName: RequestBodyValidator
+          documentation:
+            summary: Update a Video Item
+            description: Update a Video Item
+            requestModels:
+              'application/json': UpdateVideoRequestVal
     iamRoleStatements:
       - Effect: Allow
         Action:
           - dynamodb:Query
-        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}/index/${self:provider.environment.INDEX_NAME}
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.VIDEO_TABLE}
       - Effect: Allow
         Action:
           - dynamodb:UpdateItem
-        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.VIDEO_TABLE}
   # TODO: Configure this function
-  DeleteTodo:
-    handler: src/lambda/http/deleteTodo.handler
+  DeleteVideo:
+    handler: src/lambda/http/deleteVideo.handler
     events:
       - http:
           method: delete
-          path: todos/{todoId}
+          path: video/{videoId}
           authorizer: HS256Auth
           cors: true
     iamRoleStatements:
       - Effect: Allow
         Action:
           - dynamodb:Query
-        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}/index/${self:provider.environment.INDEX_NAME}
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.VIDEO_TABLE}
       - Effect: Allow
         Action:
           - dynamodb:DeleteItem
-        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.VIDEO_TABLE}
+      - Effect: Allow
+        Action:
+          - dynamodb:DeleteItem
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.VIDEO_COMMENT_TABLE}
+      - Effect: Allow
+        Action:
+          - dynamodb:Query
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.VIDEO_COMMENT_TABLE}/index/${self:provider.environment.VIDEO_COMMENT_INDEX_NAME}
+
 # TODO: Configure this function
   GenerateUploadUrl:
     handler: src/lambda/http/generateUploadUrl.handler
     events:
       - http:
           method: post
-          path: todos/{todoId}/attachment
+          path: video/{videoId}/attachment
           authorizer: HS256Auth
           cors: true
     iamRoleStatements:
@@ -136,7 +189,7 @@ functions:
         Action:
           - s3:PutObject
           - s3:GetObject
-        Resource: arn:aws:s3:::${self:provider.environment.TODOS_S3_BUCKET}/*
+        Resource: arn:aws:s3:::${self:provider.environment.VIDEO_S3_BUCKET}/*
 resources:
   Resources:
     RequestBodyValidator:
@@ -147,36 +200,50 @@ resources:
           Ref: ApiGatewayRestApi
         ValidateRequestBody: true
         ValidateRequestParameters: false
-    TodosTable:
+    VideosTable:
       Type: "AWS::DynamoDB::Table"
       Properties:
         AttributeDefinitions:
-          - AttributeName: userId
+          - AttributeName: videoId
             AttributeType: S
-          - AttributeName: dueDate
-            AttributeType: S
-          - AttributeName: todoId
+          - AttributeName: creationDateKey
             AttributeType: S
         KeySchema:
-          - AttributeName: userId
+          - AttributeName: videoId
             KeyType: HASH
-          - AttributeName: todoId
-            KeyType: RANGE
         BillingMode: PAY_PER_REQUEST
-        TableName: ${self:provider.environment.TODOS_TABLE}
-        LocalSecondaryIndexes:
-          - IndexName: ${self:provider.environment.INDEX_NAME}
+        TableName: ${self:provider.environment.VIDEO_TABLE}
+        GlobalSecondaryIndexes:
+          - IndexName: ${self:provider.environment.VIDEO_INDEX_NAME}
             KeySchema:
-              - AttributeName: userId
+              - AttributeName: creationDateKey
                 KeyType: HASH
-              - AttributeName: dueDate
-                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL # What attributes will be copied to an index
+    VideoCommentsTable:
+      Type: "AWS::DynamoDB::Table"
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: commentId
+            AttributeType: S
+          - AttributeName: videoId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: commentId
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:provider.environment.VIDEO_COMMENT_TABLE}
+        GlobalSecondaryIndexes:
+          - IndexName: ${self:provider.environment.VIDEO_COMMENT_INDEX_NAME}
+            KeySchema:
+              - AttributeName: videoId
+                KeyType: HASH
             Projection:
               ProjectionType: ALL # What attributes will be copied to an index
     AttachmentsBucket:
       Type: AWS::S3::Bucket
       Properties:
-        BucketName: ${self:provider.environment.TODOS_S3_BUCKET}
+        BucketName: ${self:provider.environment.VIDEO_S3_BUCKET}
         Tags:
           - Key: 'Allowed_Public_Access'
             Value: 'True'
@@ -205,5 +272,5 @@ resources:
               Effect: Allow
               Principal: '*'
               Action: 's3:GetObject'
-              Resource: 'arn:aws:s3:::${self:provider.environment.TODOS_S3_BUCKET}/*'
+              Resource: 'arn:aws:s3:::${self:provider.environment.VIDEO_S3_BUCKET}/*'
         Bucket: !Ref AttachmentsBucket

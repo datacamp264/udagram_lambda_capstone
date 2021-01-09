@@ -3,13 +3,13 @@ import 'source-map-support/register'
 import {APIGatewayProxyEvent, APIGatewayProxyResult, APIGatewayProxyHandler} from 'aws-lambda'
 import {createLogger} from '../../utils/logger'
 
-const logger = createLogger('deleteTodoHttp')
-import {deleteTodo} from "../../buisnessLogic/TodoLogic";
+const logger = createLogger('deleteVideoHttp')
+import {deleteVideo} from "../../buisnessLogic/TodoLogic";
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     logger.info('Processing event',{ additional: event});
-    const todoId = event.pathParameters.todoId
-    if (!todoId) {
+    const videoId = event.pathParameters.videoId
+    if (!videoId) {
         return {
             statusCode: 404,
             headers: {
@@ -22,7 +22,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
     const authorization = event.headers.Authorization
     const split = authorization.split(' ')
     const jwtToken = split[1]
-    const result = await deleteTodo(jwtToken, todoId)
+    const result = await deleteVideo(jwtToken, videoId)
     if (!result) {
         return {
             statusCode: 404,

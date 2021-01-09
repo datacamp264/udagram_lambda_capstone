@@ -1,0 +1,15 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "updateVideoRequest",
+  "type": "object",
+  "properties": {
+    "incrementVideoCount": {
+      "type": "boolean"
+    },
+    "incrementCommentCount": {
+      "type": "boolean"
+    }
+  },
+  "required": ["incrementVideoCount", "incrementCommentCount"],
+  "additionalProperties": false
+}

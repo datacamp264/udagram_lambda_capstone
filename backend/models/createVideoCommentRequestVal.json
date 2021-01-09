@@ -1,15 +1,12 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "title": "updateRequest",
+  "title": "createVideoCommentRequest",
   "type": "object",
   "properties": {
-    "name": {
-      "type": "string"
-    },
-    "dueDate": {
+    "text": {
       "type": "string"
     }
   },
-  "required": ["name", "dueDate"],
+  "required": ["text"],
   "additionalProperties": false
 }
