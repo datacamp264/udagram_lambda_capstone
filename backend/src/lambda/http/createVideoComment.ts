@@ -20,11 +20,21 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
       body: ""
     }
   }
-  const newVideo: CreateVideoCommentRequest = JSON.parse(event.body)
+  const newVideoComment: CreateVideoCommentRequest = JSON.parse(event.body)
   const authorization = event.headers.Authorization
   const split = authorization.split(' ')
   const jwtToken = split[1]
-  const item = await createVideoCommentItem(newVideo,videoId, jwtToken)
+  if(newVideoComment.text === ""){
+    return {
+      statusCode: 404,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Credentials': true
+      },
+      body: ""
+    }
+  }
+  const item = await createVideoCommentItem(newVideoComment,videoId, jwtToken)
 
   return {
     statusCode: 201,

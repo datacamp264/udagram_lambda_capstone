@@ -13,6 +13,16 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
   const authorization = event.headers.Authorization
   const split = authorization.split(' ')
   const jwtToken = split[1]
+  if(newVideo.description === "" || newVideo.title === ""){
+    return {
+      statusCode: 404,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Credentials': true
+      },
+      body: ""
+    }
+  }
   const item = await createVideo(newVideo, jwtToken)
 
   return {
